@@ -1,36 +1,51 @@
 module Magnitude
   class Unit
-    attr_reader :type
-
     def initialize(options)
-      @type = require_option(options, :type)
-      extract_converton_procs options
+      @options = options
     end
 
     def to_base_value(value)
-      @to_base_value.call(value)
+      to_base_value_proc.call(value)
     end
 
     def from_base_value(base)
-      @from_base_value.call(base)
+      from_base_value_proc.call(base)
+    end
+
+    def type
+      require_option(:type)
+    end
+
+    def name
+      require_option(:name)
+    end
+
+    def abbr
+      require_option(:abbr)
+    end
+
+    def plural
+      require_option(:plural){ "#{name}s" }
     end
 
     private
 
-    def extract_converton_procs(options)
-      @to_base_value = options.fetch(:to_base_value) do
-        ratio = require_option(options, :ratio)
+    def to_base_value_proc
+      @to_base_value_proc ||= require_option(:to_base_value) do
+        ratio = require_option(:ratio, 1)
         ->(value){ value * ratio }
       end
+    end
 
-      @from_base_value = options.fetch(:from_base_value) do
-        ratio = require_option(options, :ratio)
+    def from_base_value_proc
+      @from_base_value_proc ||= require_option(:from_base_value) do
+        ratio = require_option(:ratio, 1)
         ->(base){ Rational(base, ratio) }
       end
     end
 
-    def require_option(options, key)
-      options.fetch(key)
+    def require_option(key, *args, &block)
+      @options.fetch(key, *args, &block)
     rescue KeyError => e
       fail ArgumentError, "missing required argument: #{key}"
     end
