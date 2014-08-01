@@ -1,5 +1,6 @@
 require "magnitude/version"
 
 module Magnitude
-  # Your code goes here...
+  autoload :Unit,     "magnitude/unit"
+  autoload :Registry, "magnitude/registry"
 end
