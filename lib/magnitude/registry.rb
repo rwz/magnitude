@@ -1,8 +1,4 @@
 module Magnitude
-  class UnknownTypeError < StandardError; end
-  class UnknownUnitError < StandardError; end
-  class AmbiguousUnitError < StandardError; end
-
   class Registry
     def initialize
       @flat_list = {}
