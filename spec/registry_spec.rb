@@ -10,12 +10,36 @@ describe Magnitude::Registry do
   end
 
   context "#fetch" do
-    before{ subject.register :mass, name: "pound", abbr: :lb }
+    before{ subject.register :mass, name: "Pound", abbr: :lb }
 
     it "finds unit by abbreviation" do
       result = subject.fetch(:lb)
       expect(result).to be_kind_of(Magnitude::Unit)
-      expect(result.name).to eq("pound")
+      expect(result.name).to eq("Pound")
+    end
+
+    it "finds unit by name" do
+      result = subject.fetch("Pound")
+      expect(result).to be_kind_of(Magnitude::Unit)
+      expect(result.name).to eq("Pound")
+    end
+
+    it "finds unit by plural name" do
+      result = subject.fetch("Pounds")
+      expect(result).to be_kind_of(Magnitude::Unit)
+      expect(result.name).to eq("Pound")
+    end
+
+    it "finds unit by lower cased name" do
+      result = subject.fetch("pound")
+      expect(result).to be_kind_of(Magnitude::Unit)
+      expect(result.name).to eq("Pound")
+    end
+
+    it "finds unit by lower cased name" do
+      result = subject.fetch("pounds")
+      expect(result).to be_kind_of(Magnitude::Unit)
+      expect(result.name).to eq("Pound")
     end
 
     it "raises unknown unit error" do
@@ -29,7 +53,7 @@ describe Magnitude::Registry do
     end
 
     context "ambiguous unit" do
-      before{ subject.register :force, name: "pound", abbr: :lb }
+      before{ subject.register :force, name: "Pound", abbr: :lb }
 
       it "raises ambiguous error" do
         action = ->{ subject.fetch(:lb) }
